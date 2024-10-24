@@ -8,6 +8,15 @@ class Formulario extends StatefulWidget {
 }
 
 class _FormularioState extends State<Formulario> {
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+
+  saveProduct(){
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,16 +26,36 @@ class _FormularioState extends State<Formulario> {
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue
       ),
-      body: Column(
-        children: [
-          const Text('Form'),
-          ElevatedButton(
-            onPressed: (){
-              Navigator.pop(context);
-            }, 
-            child: const Text('Return'),
-          )
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name : '
+              ),
+            ),
+            TextField(
+              controller: priceController,
+              decoration: const InputDecoration(
+                labelText: 'Price : '
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: amountController,
+              decoration: const InputDecoration(
+                labelText: 'Amount : '
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            ElevatedButton(
+              onPressed: saveProduct(), 
+              child: const Text('Save')
+            )
+          ],
+        ),
       ),
     );
   }

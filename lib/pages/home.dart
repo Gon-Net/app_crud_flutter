@@ -1,5 +1,6 @@
 import 'package:app_crud1/pages/formulario.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'dart:convert' as convert;
 
@@ -23,7 +24,18 @@ class _HomeState extends State<Home> {
   }
 
   productGet() async {
-    var url = Uri.parse('https://8826-131-0-196-208.ngrok-free.app/api/products');
+    //var url = Uri.parse('http://localhost:8000/api/products');
+    //var url = Uri.parse('https://8826-131-0-196-208.ngrok-free.app/api/products');
+
+    String? apiUrl = dotenv.env['API_BACK'];
+    if (apiUrl == null || apiUrl.isEmpty) {
+      //print('Error: API_BACK no está configurado.');
+      return;
+    }
+
+    //var url = Uri.parse(dotenv.env['API_BACK']!+'/products');
+    var url = Uri.parse('$apiUrl/products');
+
     var response = await http.get(url);
     if(response.statusCode == 200){
       var jsonResponse = convert.jsonDecode(response.body);
