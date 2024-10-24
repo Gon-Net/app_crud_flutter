@@ -76,6 +76,97 @@ class _HomeState extends State<Home> {
                 return ListTile(
                   title: Text(products[index]['name'].toString()),
                   subtitle: Text(products[index]['price'].toString()),
+                  leading: Text(products[index]['amount'].toString()),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Formulario(
+                              id: products[index]['id'],
+                              name: products[index]['name'],
+                              price: products[index]['price'],
+                              amount: products[index]['amount'],
+                            )),
+                          );
+                          productGet();
+                        }, 
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () async {
+
+                          return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Safe delete product'),
+                                
+                                actions: <Widget>[
+
+                                  TextButton(
+                                    child: const Text('Delete'),
+                                    onPressed: () async {
+
+                                      var url = Uri.parse(dotenv.env['API_BACK']!+'/products/'+products[index]['id'].toString());
+                                      var response = await http.delete(url);
+                                      if(response.statusCode == 200){
+                                        productGet();
+                                      }else{
+                                        print('Request failed with status : ${response.statusCode}');
+                                      }
+
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+
+                                  TextButton(
+                                    onPressed: (){
+                                      Navigator.of(context).pop();
+                                    }, 
+                                    child: const Text('Cancel')
+                                  ),
+
+                                ],
+                              );
+                            },
+                          );
+
+                          // AlertDialog(
+                          //   title: const Text('Delete Product'),
+                          //   content: const Text('Delete registry?'),
+                          //   actions: [
+                          //     TextButton(
+                          //       onPressed: (){
+                          //         Navigator.pop(context);
+                          //       }, 
+                          //       child: const Text('Cancel'),
+                          //     ),
+                          //     TextButton(
+                          //       onPressed: () async {
+                          //         var url = Uri.parse(dotenv.env['API_BACK']!+'/products/'+products[index]['id'].toString());
+                          //         var response = await http.delete(url);
+                          //         if(response.statusCode == 200){
+                          //           productGet();
+                          //         }else{
+                          //           print('Request failed with status : ${response.statusCode}');
+                          //         }
+                          //         Navigator.pop(context);
+                          //       }, 
+                          //       child: const Text('Delete'),
+                          //     ),
+                          //   ],
+                          // );   
+
+
+                        }, 
+                      ),
+                    ],
+                  ),
                 );
               }),
           ),
@@ -85,12 +176,13 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.blue,
         backgroundColor: Colors.grey[300],
-        onPressed: (){
+        onPressed: () async {
           // Redireccionar a form para ingreso de datos...
-          Navigator.push(
+          await Navigator.push(
             context, 
             MaterialPageRoute(builder: (context) => const Formulario()),
           );
+          productGet();
         },
         child: const Icon(Icons.add),
       ),
