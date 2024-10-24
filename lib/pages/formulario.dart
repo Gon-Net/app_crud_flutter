@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:http/http.dart' as http;
 
 class Formulario extends StatefulWidget {
   const Formulario({super.key});
@@ -15,6 +18,19 @@ class _FormularioState extends State<Formulario> {
 
   saveProduct(){
     
+    var url = Uri.parse(dotenv.env['API_BACK']!+'/products');
+
+    http.post(url, body: {
+      'name': nameController.text,
+      'price': priceController.text,
+      'amount': amountController.text,
+    }).then((value){
+      print(value.statusCode);
+      if(value.statusCode == 201){
+        Navigator.pop(context);
+      }
+    });
+
   }
 
   @override
@@ -50,9 +66,13 @@ class _FormularioState extends State<Formulario> {
               ),
               keyboardType: TextInputType.number,
             ),
-            ElevatedButton(
-              onPressed: saveProduct(), 
-              child: const Text('Save')
+            ElevatedButton(              
+              child: const Text('Save Product', style: TextStyle(color: Colors.blue)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[300],
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                onPressed: saveProduct, 
             )
           ],
         ),
