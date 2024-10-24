@@ -38,6 +38,14 @@ class _FormularioState extends State<Formulario> {
   }
 
   saveProduct(){
+
+    if(nameController.text.isEmpty || priceController.text.isEmpty || amountController.text.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Fields is required...')
+        ),
+      );
+    }
     
     var url = Uri.parse(dotenv.env['API_BACK']!+'/products');
 
